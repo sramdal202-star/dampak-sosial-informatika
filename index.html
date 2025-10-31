@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dampak Sosial Informatika — Pembelajaran Interaktif</title>
+
+  <!-- Styles -->
+  <style>
+    :root{
+      --bg:#0f1113;              /* very dark gray */
+      --panel:#14171a;           /* slightly lighter panel */
+      --muted:#9aa6b2;           /* muted text */
+      --accent:#0b4a76;          /* dark blue */
+      --accent-2:#0d6ea8;        /* lighter blue */
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --shadow: 0 6px 24px rgba(2,6,23,0.6);
+      --ease: cubic-bezier(.22,.9,.3,1);
+      --maxwidth:1100px;
+      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui, -apple-system;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      background: linear-gradient(180deg,var(--bg) 0%, #0b0c0d 100%);
+      color:#e7eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      scroll-behavior:smooth; /* smooth scroll */
+    }
+
+    /* Container */
+    .wrap{
+      max-width:var(--maxwidth);
+      margin:40px auto;
+      padding:36px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,0.02);
+      backdrop-filter: blur(8px);
+    }
+
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      margin-bottom:28px;
+    }
+
+    .logo{
+      width:68px;
+      height:68px;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 8px 30px rgba(9,56,91,0.45);
+      flex:0 0 68px;
+      transform: translateZ(0);
+    }
+
+    .logo h1{
+      font-size:22px;
+      margin:0;
+      color:white;
+      letter-spacing: -0.6px;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .title h2{
+      margin:0;
+      font-size:20px;
+      font-weight:600;
+      color:#f4fbff;
+    }
+    .title p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    nav.toc{
+      margin-top:12px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    nav.toc a{
+      color:var(--muted);
+      text-decoration:none;
+      padding:8px 12px;
+      background:var(--glass);
+      border-radius:10px;
+      font-size:13px;
+      transition: all 300ms var(--ease);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    nav.toc a:hover{ transform: translateY(-4px); color:white; box-shadow:0 8px 20px rgba(11,74,118,0.12) }
+
+    main{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:24px;
+      align-items:start;
+      margin-top:18px;
+    }
+
+    /* Left: content */
+    .content{
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      padding:22px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.02);
+      min-height:360px;
+      overflow:visible;
+    }
+
+    article.section{
+      margin-bottom:26px;
+      padding:14px 6px;
+      transition: transform 450ms var(--ease), opacity 400ms var(--ease);
+    }
+
+    article.section h3{
+      margin:6px 0 12px 0;
+      color:#eaf6ff;
+      font-size:18px;
+    }
+    article.section p{
+      color:var(--muted);
+      line-height:1.65;
+      margin:0 0 12px 0;
+      font-size:15px;
+    }
+    .highlight{
+      color:var(--accent-2);
+      font-weight:600;
+    }
+
+    /* Right: sidebar */
+    aside.panel{
+      position:sticky;
+      top:36px;
+      height:fit-content;
+      background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      padding:18px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .panel h4{ margin:0 0 12px 0; font-size:15px; color:#eaf6ff}
+    .panel p{ margin:0; font-size:14px; color:var(--muted) }
+
+    /* Quiz area */
+    .quiz{
+      margin-top:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .qcard{
+      background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.008));
+      padding:14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .question{
+      font-size:15px;
+      margin-bottom:10px;
+      color:#eaf6ff;
+    }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .option{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.02);
+      color:var(--muted);
+      cursor:pointer;
+      transition: all 200ms var(--ease);
+      user-select:none;
+    }
+    .option:hover{ transform: translateY(-3px); background: rgba(255,255,255,0.01) }
+    .option input{accent-color:var(--accent-2); transform:scale(1.05)}
+    .option.correct{ border-color: rgba(10,160,120,0.16); background: linear-gradient(90deg, rgba(10,160,120,0.06), transparent); color:#c9fff0 }
+    .option.wrong{ border-color: rgba(210,55,55,0.14); background: linear-gradient(90deg, rgba(210,55,55,0.04), transparent); color:#ffdfe0 }
+
+    .quiz-controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:8px;
+    }
+    .btn{
+      background: linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      padding:10px 14px;
+      border-radius:10px;
+      border: none;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 8px 20px rgba(11,74,118,0.18);
+      transition: transform 220ms var(--ease);
+    }
+    .btn:active{ transform: translateY(2px) }
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.03);
+      color:var(--muted);
+      box-shadow:none;
+    }
+
+    .score{
+      margin-top:12px;
+      padding:12px;
+      border-radius:10px;
+      background: linear-gradient(90deg, rgba(11,74,118,0.06), rgba(13,110,168,0.04));
+      color:#eaf6ff;
+      font-weight:700;
+      text-align:center;
+    }
+
+    footer{
+      margin-top:26px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* Smooth entry animations */
+    .fade-up{
+      opacity:0;
+      transform: translateY(12px);
+      animation:fadeUp 700ms var(--ease) forwards;
+    }
+    @keyframes fadeUp{
+      to{ opacity:1; transform: translateY(0) }
+    }
+
+    /* Responsive */
+    @media (max-width:980px){
+      main{ grid-template-columns: 1fr; }
+      aside.panel{ position: relative; top:0 }
+      .wrap{ margin:18px 18px; padding:18px }
+    }
+
+    /* Scrollbar tasteful */
+    ::-webkit-scrollbar{ height:10px; width:10px }
+    ::-webkit-scrollbar-thumb{ background: linear-gradient(180deg,#0b4a76, #0d6ea8); border-radius:10px }
+    ::-webkit-scrollbar-track{ background: transparent }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <h1>IF</h1>
+      </div>
+      <div class="title">
+        <h2>Dampak Sosial Informatika</h2>
+        <p>Pembelajaran interaktif — Memahami bagaimana informatika mengubah masyarakat</p>
+        <nav class="toc" aria-label="Daftar isi">
+          <a href="#intro">Pengantar</a>
+          <a href="#positif">Dampak Positif</a>
+          <a href="#negatif">Dampak Negatif</a>
+          <a href="#etika">Etika & Kebijakan</a>
+          <a href="#kasus">Studi Kasus</a>
+          <a href="#latihan">Latihan Soal</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="content" aria-labelledby="content-heading">
+        <article id="intro" class="section fade-up" aria-labelledby="intro-h">
+          <h3 id="intro-h">Pengantar</h3>
+          <p>Informatika adalah ilmu dan praktik mengolah informasi menggunakan komputer dan sistem digital. Seiring berkembangnya teknologi informasi — mulai dari internet, media sosial, hingga kecerdasan buatan — aspek sosial masyarakat ikut berubah. Materi ini mengajak Anda memahami dampak-dampak tersebut: bagaimana teknologi memengaruhi komunikasi, ekonomi, pekerjaan, privasi, politik, dan budaya.</p>
+          <p>Di setiap bagian akan dijelaskan contoh nyata, manfaat, tantangan, serta rekomendasi agar teknologi dapat dimanfaatkan secara bertanggung jawab.</p>
+        </article>
+
+        <article id="positif" class="section fade-up" aria-labelledby="pos-h">
+          <h3 id="pos-h">Dampak Positif Informatika</h3>
+          <p><span class="highlight">Akses Informasi dan Pengetahuan:</span> Internet membuka akses ke sumber belajar, jurnal, kursus online, dan perpustakaan digital. Pendidikan jarak jauh membuat pembelajaran lebih inklusif.</p>
+          <p><span class="highlight">Komunikasi & Kolaborasi:</span> Platform pesan, video call, dan alat kolaborasi memungkinkan orang bekerja dan berinteraksi melintasi batas geografis dengan efisien.</p>
+          <p><span class="highlight">Inovasi Ekonomi:</span> E-commerce, fintech, dan layanan digital menciptakan peluang usaha baru, model bisnis, dan pasar global untuk pelaku usaha kecil hingga besar.</p>
+          <p><span class="highlight">Efisiensi Layanan Publik:</span> Pemerintahan digital (e-government), sistem kesehatan elektronik (e-health), dan sistem transportasi cerdas meningkatkan kecepatan layanan dan pengambilan keputusan berbasis data.</p>
+        </article>
+
+        <article id="negatif" class="section fade-up" aria-labelledby="neg-h">
+          <h3 id="neg-h">Dampak Negatif dan Tantangan</h3>
+          <p><span class="highlight">Pengangguran Struktural:</span> Otomasi dan AI dapat menggantikan pekerjaan rutin, memicu kebutuhan reskilling dan perubahan dalam pendidikan vokasional.</p>
+          <p><span class="highlight">Kesenjangan Digital:</span> Tidak semua lapisan masyarakat memiliki akses perangkat atau koneksi internet stabil — menyebabkan ketimpangan dalam akses informasi dan peluang ekonomi.</p>
+          <p><span class="highlight">Privasi dan Keamanan:</span> Pengumpulan data skala besar menimbulkan risiko kebocoran data, pengawasan, dan penyalahgunaan informasi pribadi.</p>
+          <p><span class="highlight">Disinformasi & Polarisasi:</span> Algoritma dan media sosial bisa mempercepat penyebaran berita palsu, filter bubble, dan meningkatkan polarisasi sosial serta menurunkan kepercayaan publik.</p>
+        </article>
+
+        <article id="etika" class="section fade-up" aria-labelledby="eth-h">
+          <h3 id="eth-h">Etika, Regulasi, dan Rekomendasi</h3>
+          <p><span class="highlight">Etika Pengembang:</span> Desain sistem harus mempertimbangkan dampak sosial, bias algoritmik, dan fairness. Prinsip seperti <em>privacy by design</em> dan <em>explainability</em> penting.</p>
+          <p><span class="highlight">Peran Pemerintah:</span> Regulasi yang adaptif diperlukan—mis. perlindungan data pribadi, aturan AI yang transparan, jaminan hak digital, dan kebijakan untuk memperkecil kesenjangan digital.</p>
+          <p><span class="highlight">Peran Individu & Masyarakat:</span> Literasi digital membantu pengguna mengenali disinformasi, memahami pengaturan privasi, dan beradaptasi dengan perubahan pekerjaan.</p>
+          <p><span class="highlight">Kolaborasi Multistakeholder:</span> Pemerintah, industri, akademia, dan masyarakat sipil perlu bekerja sama untuk merancang teknologi yang adil dan bermanfaat.</p>
+        </article>
+
+        <article id="kasus" class="section fade-up" aria-labelledby="case-h">
+          <h3 id="case-h">Studi Kasus Singkat</h3>
+          <p><strong>Telemedis di Masa Pandemi:</strong> Solusi telemedicine memperluas akses layanan kesehatan saat pembatasan sosial, namun menimbulkan masalah privasi dan kebutuhan infrastruktur di daerah terpencil.</p>
+          <p><strong>Platform Ride-Hailing:</strong> Memudahkan mobilitas, menambah penghasilan bagi mitra pengemudi, namun menimbulkan perdebatan tentang regulasi, keselamatan kerja, serta status pekerja kontrak.</p>
+          <p><strong>Kecerdasan Buatan dalam Rekrutmen:</strong> AI membantu menargetkan kandidat, tapi jika data latih bias, sistem bisa memperkuat diskriminasi—memerlukan audit dan transparansi.</p>
+        </article>
+
+        <article id="praktik" class="section fade-up" aria-labelledby="prakt-h">
+          <h3 id="prakt-h">Praktik Baik dan Hal yang Bisa Dilakukan</h3>
+          <p>Untuk meminimalkan dampak negatif dan memaksimalkan manfaat:</p>
+          <ul style="color:var(--muted); line-height:1.6">
+            <li>Implementasi kebijakan privasi yang jelas dan mudah dipahami.</li>
+            <li>Peningkatan literasi digital di semua jenjang pendidikan.</li>
+            <li>Program reskilling untuk pekerja terdampak otomatisasi.</li>
+            <li>Audit etika untuk algoritma dan sistem AI secara berkala.</li>
+            <li>Investasi infrastruktur untuk menjangkau daerah kurang terlayani.</li>
+          </ul>
+        </article>
+
+        <article id="latihan" class="section fade-up" aria-labelledby="quiz-h">
+          <h3 id="quiz-h">Latihan Soal (Pilihan Ganda)</h3>
+          <p>Kerjakan soal-soal singkat berikut. Pilih jawaban terbaik dan tekan "Periksa Jawaban" untuk melihat hasil dan skor.</p>
+
+          <div class="quiz" id="quiz-root" aria-live="polite">
+            <!-- Quiz cards will be injected here by JS -->
+          </div>
+        </article>
+
+        <footer>
+          <div> dibuat oleh: Pembelajaran Interaktif • Informatika</div>
+          <div style="color:var(--muted)">Tip: gunakan tombol "Reset" untuk mengulang latihan.</div>
+        </footer>
+      </section>
+
+      <aside class="panel fade-up" aria-labelledby="panel-h">
+        <h4 id="panel-h">Ringkasan Cepat</h4>
+        <p>Informatika mengubah cara kita bekerja, belajar, dan berinteraksi. Ada banyak manfaat—akses informasi, efisiensi, inovasi ekonomi—namun juga tantangan seperti privasi, disinformasi, dan pengangguran struktural. Solusi terbaik melibatkan pendidikan, kebijakan, dan desain etis.</p>
+
+        <div style="height:12px"></div>
+        <h4>Skema Warna</h4>
+        <p style="color:var(--muted)">Tema: biru tua & abu-abu gelap. Desain fokus pada keterbacaan dan transisi halus.</p>
+
+        <div style="height:12px"></div>
+        <h4>Progress & Skor</h4>
+        <div id="score-box" class="score" aria-live="polite">Belum ada skor — kerjakan quiz.</div>
+
+        <div style="height:10px"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" id="btn-check">Periksa Jawaban</button>
+          <button class="btn ghost" id="btn-reset">Reset</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Smooth subtle entrance delay for sections
+    document.querySelectorAll('.section').forEach((el,i)=>{
+      el.style.animationDelay = (i*80)+'ms';
+    });
+
+    // Quiz data
+    const quizData = [
+      {
+        id:1,
+        q: "Salah satu dampak positif informatika terhadap pendidikan adalah...",
+        options: [
+          "Meningkatkan pengawasan pemerintah terhadap siswa",
+          "Membatasi akses ke sumber belajar lokal",
+          "Memungkinkan pendidikan jarak jauh dan akses ke materi global",
+          "Menggantikan guru sepenuhnya dengan robot"
+        ],
+        a:2, // index
+        explanation: "Pembelajaran jarak jauh dan sumber online memperluas akses ke materi pembelajaran global. Teknologi melengkapi, bukan selalu menggantikan guru sepenuhnya."
+      },
+      {
+        id:2,
+        q: "Kemenangan algoritma yang bias dalam rekrutmen dapat menyebabkan...",
+        options: [
+          "Peningkatan aksesibilitas yang adil",
+          "Penguatan diskriminasi terhadap kelompok tertentu",
+          "Penghapusan semua bentuk penilaian manusia",
+          "Menjamin kerahasiaan data pelamar"
+        ],
+        a:1,
+        explanation: "Jika data latih mengandung bias historis, algoritma bisa mempelajari dan memperkuat bias tersebut sehingga berdampak diskriminatif."
+      },
+      {
+        id:3,
+        q: "Kesenjangan digital terutama terjadi karena...",
+        options: [
+          "Semua orang memiliki perangkat yang sama",
+          "Perbedaan akses konektivitas dan kemampuan digital antar kelompok",
+          "Terlalu banyak program literasi digital",
+          "Regulasi yang terlalu longgar"
+        ],
+        a:1,
+        explanation: "Kesenjangan digital disebabkan oleh ketersediaan infrastruktur, biaya perangkat, dan keterampilan digital yang tidak merata."
+      },
+      {
+        id:4,
+        q: "Apa praktik baik yang dapat mengurangi risiko kebocoran data?",
+        options: [
+          "Menyimpan data sensitif tanpa enkripsi",
+          "Mengumpulkan sebanyak-banyaknya data tanpa tujuan",
+          "Mengimplementasikan 'privacy by design' dan enkripsi data",
+          "Memublikasikan semua data untuk transparansi"
+        ],
+        a:2,
+        explanation: "'Privacy by design' dan enkripsi membantu melindungi data sejak tahap desain sistem sehingga mengurangi risiko kebocoran."
+      },
+      {
+        id:5,
+        q: "Disinformasi di media sosial biasanya dapat diminimalkan dengan...",
+        options: [
+          "Menghapus semua akun pengguna",
+          "Meningkatkan literasi media dan verifikasi sumber",
+          "Mempercayai sumber tak dikenal",
+          "Memblokir akses internet"
+        ],
+        a:1,
+        explanation: "Literasi media yang baik dan verifikasi sumber dapat membantu pengguna membedakan antara informasi valid dan palsu."
+      }
+    ];
+
+    // Build quiz UI
+    const root = document.getElementById('quiz-root');
+    function buildQuiz(){
+      root.innerHTML = '';
+      quizData.forEach((item, idx)=>{
+        const card = document.createElement('div');
+        card.className = 'qcard';
+        card.dataset.qid = item.id;
+        card.innerHTML = `
+          <div class="question">${idx+1}. ${item.q}</div>
+          <div class="options" role="radiogroup" aria-labelledby="">
+            ${item.options.map((opt,i)=>`
+              <label class="option" data-index="${i}">
+                <input type="radio" name="q${item.id}" value="${i}" />
+                <span style="flex:1">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div class="explain" style="margin-top:8px; color:var(--muted); font-size:13px; display:none"></div>
+        `;
+        root.appendChild(card);
+      });
+    }
+
+    buildQuiz();
+
+    // Utility: show score
+    const scoreBox = document.getElementById('score-box');
+    function computeScore(showDetails=true){
+      const cards = root.querySelectorAll('.qcard');
+      let correctCount=0;
+      cards.forEach(card=>{
+        const qid = Number(card.dataset.qid);
+        const data = quizData.find(q=>q.id===qid);
+        const selected = card.querySelector('input[type="radio"]:checked');
+        const opts = card.querySelectorAll('.option');
+        // reset classes
+        opts.forEach(o=>o.classList.remove('correct','wrong'));
+        const explainEl = card.querySelector('.explain');
+
+        if(selected){
+          const val = Number(selected.value);
+          if(val === data.a){
+            correctCount++;
+            // mark chosen option as correct
+            const chosen = card.querySelector(`.option[data-index="${val}"]`);
+            chosen.classList.add('correct');
+            explainEl.style.display = 'block';
+            explainEl.textContent = 'Benar — '+data.explanation;
+          } else {
+            // mark chosen wrong and correct one
+            const chosen = card.querySelector(`.option[data-index="${val}"]`);
+            const correctOpt = card.querySelector(`.option[data-index="${data.a}"]`);
+            if(chosen) chosen.classList.add('wrong');
+            if(correctOpt) correctOpt.classList.add('correct');
+            explainEl.style.display = 'block';
+            explainEl.textContent = 'Salah — '+data.explanation;
+          }
+        } else {
+          // unanswered: mark correct lightly
+          const correctOpt = card.querySelector(`.option[data-index="${data.a}"]`);
+          if(correctOpt) correctOpt.classList.add('correct');
+          explainEl.style.display = 'block';
+          explainEl.textContent = 'Belum dijawab — '+data.explanation;
+        }
+      });
+
+      // percentage
+      const percent = Math.round((correctCount/quizData.length)*100);
+      scoreBox.textContent = `${correctCount} / ${quizData.length} benar — Skor: ${percent}%`;
+      if(showDetails){
+        // little success animation
+        scoreBox.animate([
+          { transform: 'translateY(-6px)', opacity: 0.9 },
+          { transform: 'translateY(0)', opacity: 1 }
+        ], { duration: 420, easing: 'ease-out' });
+      }
+      return {correct:correctCount, total: quizData.length, percent};
+    }
+
+    // Buttons
+    document.getElementById('btn-check').addEventListener('click', ()=>{
+      computeScore(true);
+      // scroll to score box smoothly on small screens
+      scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', ()=>{
+      // uncheck all and hide explanations and classes
+      root.querySelectorAll('input[type="radio"]').forEach(r=> r.checked = false);
+      root.querySelectorAll('.option').forEach(o=> o.classList.remove('correct','wrong'));
+      root.querySelectorAll('.explain').forEach(e=> { e.style.display='none'; e.textContent = '' });
+      scoreBox.textContent = 'Belum ada skor — kerjakan quiz.';
+      // subtle focus to first question
+      const first = root.querySelector('.qcard');
+      if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    // Allow clicking the whole label card to select radio
+    root.addEventListener('click', (e)=>{
+      const opt = e.target.closest('.option');
+      if(!opt) return;
+      const input = opt.querySelector('input[type="radio"]');
+      if(input){
+        input.checked = true;
+        // small visual press
+        opt.animate([{ transform:'scale(0.995)' }, { transform:'scale(1)' }], { duration:120, easing:'ease-out' });
+      }
+    });
+
+    // keyboard accessibility: pressing Enter on a focused option selects it
+    root.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        const opt = e.target.closest('.option');
+        if(opt){
+          const input = opt.querySelector('input[type="radio"]');
+          if(input){ input.checked = true; e.preventDefault(); }
+        }
+      }
+    });
+
+    // Initialize: small intro animation for logo and title
+    window.addEventListener('load', ()=>{
+      document.querySelector('.logo').animate([{ transform: 'translateY(-6px) rotate(-6deg)' }, { transform: 'translateY(0) rotate(0)' }], { duration:700, easing:'cubic-bezier(.2,.9,.3,1)' });
+    });
+
+    // Optional: save progress in localStorage (simple)
+    const STORAGE_KEY = 'quiz-progress-dampak-sosial-informatika-v1';
+    // load
+    function saveProgress(){
+      const answers = {};
+      root.querySelectorAll('input[type="radio"]:checked').forEach(r=>{
+        const name = r.name; // q1 etc
+        answers[name] = r.value;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+    }
+    function loadProgress(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const answers = JSON.parse(raw);
+        Object.keys(answers).forEach(name=>{
+          const input = root.querySelector(`input[name="${name}"][value="${answers[name]}"]`);
+          if(input) input.checked = true;
+        });
+      }catch(e){}
+    }
+    // autosave on change
+    root.addEventListener('change', ()=>{
+      saveProgress();
+    });
+    // load on start
+    loadProgress();
+
+    // On navigation links, smooth scroll offset compensation
+    document.querySelectorAll('nav.toc a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        // default smooth scroll handled by browser; but ensure offset a bit
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(!el) return;
+        const rect = el.getBoundingClientRect();
+        const top = window.scrollY + rect.top - 18;
+        window.scrollTo({ top, behavior:'smooth' });
+      });
+    });
+
+    // Small performance: lazy-reveal sections when in view
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          en.target.classList.add('visible');
+          en.target.style.opacity = 1;
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.section').forEach(s=> observer.observe(s));
+  </script>
+</body>
+</html>
